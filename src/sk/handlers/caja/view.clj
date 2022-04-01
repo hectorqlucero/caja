@@ -1,6 +1,3 @@
-No matching autocommands: User FireplacePreConnect
-No matching autocommands: User FireplacePreConnect
-No matching autocommands: User FireplaceEvalPost
 (ns sk.handlers.caja.view
   (:require [sk.handlers.caja.model
              :refer [get-rows get-rows-consulta get-balances get-docente]]
