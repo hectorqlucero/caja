@@ -18,7 +18,7 @@
     retiros))
 
 (defn money-format [total]
-  (mf/format (ma/amount-of mc/MXN total) (Locale. "es" "MX")))
+  (mf/format (ma/amount-of (mc/for-code "MXN") total) (Locale. "" "MX")))
 
 (defn balance [docente-id]
   (let [depositos (depositos docente-id)

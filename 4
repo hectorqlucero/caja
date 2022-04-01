@@ -1,7 +1,10 @@
 (ns sk.handlers.caja.view
   (:require [sk.handlers.caja.model
-             :refer [get-rows get-rows-consulta get-balances get-docente]]
-            [sk.handlers.movimientos.model :refer [money-format]]))
+             :refer [get-rows get-rows-consulta get-balances get-docente money-format]]
+            [clojurewerkz.money.amounts :as ma]
+            [clojurewerkz.money.currencies :as mc]
+            [clojurewerkz.money.format :as mf])
+  (:import java.util.Locale))
 
 (defn my-body [row]
   [:tr
@@ -107,8 +110,8 @@
                      (list
                       [:tr
                        [:td (:fecha_formatted row)]
-                       [:td (money-format (:deposito row))]
-                       [:td (money-format (:retiro row))]])) rows)]]]]]]]]])))
+                       [:td (format-pesos (:deposito row))]
+                       [:td (format-pesos (:retiro row))]])) rows)]]]]]]]]])))
 (defn consulta-scripts []
   [:script
    "
@@ -122,5 +125,6 @@
    "])
 
 (comment
-  (money-format 200)
+  (format-pesos 200)
   (consulta-view "Consultas" 1))
+
