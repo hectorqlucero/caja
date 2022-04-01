@@ -6,6 +6,9 @@
             [clojurewerkz.money.format :as mf])
   (:import java.util.Locale))
 
+(defn format-pesos [cantidad]
+  (mf/format (ma/amount-of mc/MXN cantidad) (Locale. "" "MX")))
+
 (defn my-body [row]
   [:tr
    [:td (:f_docentes row)]
@@ -91,9 +94,9 @@
                [:th "BALANCE"]]]
              [:tbody
               [:tr
-               [:td (mf/format  (ma/amount-of mc/MXN (:depositos balances-row)) (Locale. "" "MX"))]
-               [:td (mf/format (ma/amount-of mc/MXN (:retiros balances-row)) (Locale. "" "MX"))]
-               [:td (mf/format (ma/amount-of mc/MXN (:balance balances-row)) (Locale. "" "MX"))]]]]]]]]
+               [:td (format-pesos (:depositos balances-row))]
+               [:td (format-pesos (:retiros balances-row))]
+               [:td (format-pesos (:balance balances-row))]]]]]]]]
         [:div.col
          [:div.card {:style "width: 35rem;"}
           [:div.card-body
@@ -110,9 +113,8 @@
                      (list
                       [:tr
                        [:td (:fecha_formatted row)]
-                       [:td (mf/format (ma/amount-of mc/MXN (:deposito row)) (Locale. "" "MX"))]
-                       [:td (mf/format (ma/amount-of mc/MXN (:retiro row)) (Locale. "" "MX"))]])) rows)]]]]]]]]])))
-
+                       [:td (format-pesos (:deposito row))]
+                       [:td (format-pesos (:retiro row))]])) rows)]]]]]]]]])))
 (defn consulta-scripts []
   [:script
    "
@@ -126,4 +128,5 @@
    "])
 
 (comment
+  (format-pesos 200)
   (consulta-view "Consultas" 1))
