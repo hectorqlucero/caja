@@ -3,8 +3,7 @@
              :refer [get-rows get-rows-consulta get-balances get-docente]]
             [clojurewerkz.money.amounts :as ma]
             [clojurewerkz.money.currencies :as mc]
-            [clojurewerkz.money.format :as mf]
-            [hiccup.page :refer [include-js]])
+            [clojurewerkz.money.format :as mf])
   (:import java.util.Locale))
 
 (defn my-body [row]
@@ -17,7 +16,7 @@
 
 (defn caja-view [title]
   (let [rows (get-rows "movimientos")]
-    [:table.dg {:data-options "remoteSort:false,fit:true,rownumbers:true,fitColumns:true" :title "Caja"}
+    [:table.dg {:data-options "remoteSort:false,fit:true,rownumbers:true,fitColumns:true" :title title}
      [:thead
       [:tr
        [:th {:data-options "field:'f_docentes',sortable:true,width:100"} "Docente"]

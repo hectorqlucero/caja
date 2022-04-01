@@ -17,7 +17,7 @@
   m.fecha desc,d.nombre,d.paterno,d.materno
   ")
 
-(defn get-rows [tabla]
+(defn get-rows [_]
   (Query db [get-rows-sql]))
 
 (def get-rows-consulta-sql
@@ -37,15 +37,6 @@
   m.fecha desc,d.nombre,d.paterno,d.materno
   ")
 
-(def get-rows-consulta-depositos-sql
-  "
-  SELECT
-  cantidad
-  FROM movimientos
-  WHERE
-  tipo_movimiento = 'D'
-  and f_docentes = ?
-  ")
 
 (defn get-balances [rows]
   (let [depositos (reduce + (map #(+ (:deposito %)) rows))
