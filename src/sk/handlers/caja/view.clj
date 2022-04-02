@@ -100,15 +100,20 @@
              [:thead
               [:tr
                [:th "FECHA"]
-               [:th "DEPOSITO"]
-               [:th "RETIRO"]]]
+               [:th {:style "text-align:right;"} "DEPOSITO"]
+               [:th {:style "text-align:right;"} "RETIRO"]]]
              [:tbody
               (map (fn [row]
                      (list
                       [:tr
-                       [:td (:fecha_formatted row)]
-                       [:td (money-format (:deposito row))]
-                       [:td (money-format (:retiro row))]])) rows)]]]]]]]]])))
+                       [:td {:style "text-align:right;"} (:fecha_formatted row)]
+                       [:td {:style "text-align:right;"} (money-format (:deposito row))]
+                       [:td {:style "text-align:right;"} (money-format (:retiro row))]])) rows)
+              [:tr
+               [:td [:span {:style "font-weight:bold;"} "Total:"]]
+               [:td {:style "text-align:right;"} (money-format (:depositos balances-row))]
+               [:td {:style "text-align:right;"} (money-format (:retiros balances-row))]]]]]]]]]]])))
+
 (defn consulta-scripts []
   [:script
    "
