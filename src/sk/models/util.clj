@@ -7,7 +7,8 @@
             [clojure.string :refer [join]]
             [date-clj :as d]
             [noir.session :as session]
-            [sk.models.crud :refer [Insert Query Save Update config db]])
+            [sk.user :as user]
+            [sk.models.crud :refer [Insert Query Save Update db]])
   (:import java.text.SimpleDateFormat
            [java.util UUID]))
 
@@ -38,7 +39,7 @@
 ;;overlaps?: (t/overlaps? this-week last-week)
 ;;extend: (t/extend this-week (t/months 6))
 
-(def tz (t/time-zone-for-id (:tz config)))
+(def tz (t/time-zone-for-id (:tz user/config)))
 
 (def internal-date-parser (f/formatter tz "YYYY-MM-dd" "MM/dd/YYYY"))
 
@@ -520,7 +521,7 @@
        (nil? photo-val)
        (nil? uuid))
     nil
-    (str "<img src='" (:path config)  photo-val "?t=" uuid "' onError=\"this.src='/images/placeholder_profile.png'\" width='95' height='71'></img>")))
+    (str "<img src='" (:path user/config)  photo-val "?t=" uuid "' onError=\"this.src='/images/placeholder_profile.png'\" width='95' height='71'></img>")))
 
 (defn get-photo [table-name field-name id-name id-value]
   (let [photo-val   (get-photo-val table-name field-name id-name id-value)
@@ -689,7 +690,7 @@
   [table-name field-name id-name id-value & extra-folder]
   (let [img-val     (get-img-val table-name field-name id-name id-value)
         uuid        (str (UUID/randomUUID))
-        path        (str (:path config) (first extra-folder))
+        path        (str (:path user/config) (first extra-folder))
         placeholder "<img src='/images/placeholder_profile.png' width='95' height='71'>"
         image       (build-img-html img-val uuid path)]
     (if (empty? img-val) placeholder image)))
@@ -744,7 +745,7 @@
       onLoadSuccess: function(){
         let d = new Date();
         let imgValue = $('#imagen').val();
-        let imgPath = " (:path config) ";
+        let imgPath = " (:path user/config) ";
         let imgSrc = imgPath + imgValue + '?' + d.getTime();
         $('#image1').attr('src', imgSrc);
       }
@@ -773,7 +774,7 @@
         let d = new Date();
         let imgValue = val;
         let imgError = 'this.src=\"/images/placeholder_profile.png\"';
-        let imgPath = " (:path config) ";
+        let imgPath = " (:path user/config) ";
         let imgSrc = imgPath + imgValue + '?' + d.getTime();
         let imgTag = '<img id=img'+index+' src='+imgSrc+' onError='+imgError+' width=95 height=71 onclick=resizeImage(this) />';
         return imgTag;

@@ -1,8 +1,8 @@
 (ns sk.handlers.admin.users.view
   (:require [hiccup.page :refer [include-js]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [sk.models.crud :refer [config]]
-            [sk.models.util :refer 
+            [sk.user :as user]
+            [sk.models.util :refer
              [build-dialog build-dialog-buttons build-field build-image-field build-image-field-script build-radio-buttons build-table]]))
 
 (def dialog-fields
@@ -107,11 +107,11 @@
 
 (defn users-scripts []
   (list
-  (include-js "/js/grid.js")
-  [:script
-   (build-image-field-script)
-  (str
-  "
+   (include-js "/js/grid.js")
+   [:script
+    (build-image-field-script)
+    (str
+     "
   function resizeImage(imgObject) {
     var img = $('#'+imgObject.id);
     if(img.width() < 500) {
@@ -126,7 +126,7 @@
       let d = new Date();
       let imgValue = val;
       let imgError = 'this.src=\"/images/placeholder_profile.png\"';
-      let imgPath = " (:path config) ";
+      let imgPath = " (:path user/config) ";
       let imgSrc = imgPath + imgValue + '?' + d.getTime();
       let imgTag = '<img id=img'+index+' src='+imgSrc+' onError='+imgError+' width=95 height=71 onclick=resizeImage(this) />';
       return imgTag;
@@ -152,5 +152,4 @@
       return 'No';
     }
   }
-  ")]
-  ))
+  ")]))

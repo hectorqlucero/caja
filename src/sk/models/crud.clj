@@ -1,21 +1,35 @@
 (ns sk.models.crud
   (:require [cheshire.core :refer [generate-string]]
             [clojure.java.io :as io]
+            [sk.user :as user]
             [clojure.java.jdbc :as j]
             [clojure.string :as st])
   (:import java.text.SimpleDateFormat))
 
-(defn get-config
-  []
-  (try
-    (binding [*read-eval* false]
-      (read-string (str (slurp "profiles.clj"))))
-    (catch Exception e (.getMessage e))))
+(def db {:classname                       (:db-class user/config)
+         :subprotocol                     (:db-protocol user/config)
+         :subname                         (:db-name user/config)
+         :user                            (:db-user user/config)
+         :password                        (:db-pwd user/config)
+         :useSSL                          false
+         :useTimezone                     true
+         :useLegacyDatetimeCode           false
+         :serverTimezone                  "UTC"
+         :noTimezoneConversionForTimeType true
+         :dumpQueriesOnException          true
+         :autoDeserialize                 true
+         :useDirectRowUnpack              false
+         :cachePrepStmts                  true
+         :cacheCallableStmts              true
+         :cacheServerConfiguration        true
+         :useLocalSessionState            true
+         :elideSetAutoCommits             true
+         :alwaysSendSetIsolation          false
+         :enableQueryTimeouts             false
+         :zeroDateTimeBehavior            "CONVERT_TO_NULL"}) ; Database connection
 
-(defonce db (get-in (get-config) [:provided :env :database-url]))
-(defonce config (get-in (get-config) [:provided :config]))
-(defonce SALT "897sdn9j98u98kj")                                ; encryption salt for DB
-(defonce KEY (byte-array 16))
+(def SALT "897sdn9j98u98kj")                                ; encryption salt for DB                            ; encryption salt for DB
+(def KEY (byte-array 16))
 
 (defn aes-in
   "Encrypt a value MySQL"
@@ -332,7 +346,7 @@
           file (:file params)
           postvars (dissoc (build-postvars table params) :file)
           the-id (str (get-id id postvars table))
-          path (str (:uploads config) folder "/")
+          path (str (:uploads user/config) folder "/")
           image-name (crud-upload-image table file the-id path)
           postvars (assoc postvars :imagen image-name :id the-id)
           result (Save db (keyword table) postvars ["id = ?" the-id])]

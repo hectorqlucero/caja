@@ -1,7 +1,7 @@
 (ns sk.layout
   (:require [hiccup.page :refer [html5 include-css include-js]]
             [clj-time.core :as t]
-            [sk.models.crud :refer [config]]
+            [sk.user :as user]
             [sk.models.util :refer [user-level user-name]]))
 
 (defn build-admin []
@@ -13,7 +13,7 @@
 (defn menus-private []
   (list
    [:nav.navbar.navbar-expand-sm.navbar-dark.bg-dark.fixed-top
-    [:a.navbar-brand {:href "/"} (:site-name config)]
+    [:a.navbar-brand {:href "/"} (:site-name user/config)]
     [:button.navbar-toggler {:type "button"
                              :data-toggle "collapse"
                              :data-target "#collapsibleNavbar"}
@@ -43,7 +43,7 @@
 (defn menus-public []
   (list
    [:nav.navbar.navbar-expand-sm.navbar-dark.bg-dark.fixed-top
-    [:a.navbar-brand {:href "/"} (:site-name config)]
+    [:a.navbar-brand {:href "/"} (:site-name user/config)]
     [:button.navbar-toggler {:type "button"
                              :data-toggle "collapse"
                              :data-target "#collapsibleNavbar"}
@@ -55,7 +55,7 @@
 (defn menus-none []
   (list
    [:nav.navbar.navbar-expand-sm.navbar-dark.bg-dark.fixed-top
-    [:a.navbar-brand {:href "#"} (:site-name config)]
+    [:a.navbar-brand {:href "#"} (:site-name user/config)]
     [:button.navbar-toggler {:type "button"
                              :data-toggle "collapse"
                              :data-target "#collapsibleNavbar"}
@@ -92,11 +92,11 @@
    (include-js "/js/main.js")))
 
 (defn application [title ok js & content]
-  (html5 {:ng-app (:site-name config) :lang "es"}
+  (html5 {:ng-app (:site-name user/config) :lang "es"}
          [:head
           [:title (if title
                     title
-                    (:site-name config))]
+                    (:site-name user/config))]
           [:meta {:charset "UTF-8"}]
           [:meta {:name "viewport"
                   :content "width=device-width, initial-scale=1"}]
@@ -117,7 +117,7 @@
           [:span  "Copyright &copy" (t/year (t/now)) " Lucero Systems - All Rights Reserved"]]))
 
 (defn error-404 [content return-url]
-  (html5 {:ng-app (:site-name config) :lang "es"}
+  (html5 {:ng-app (:site-name user/config) :lang "es"}
          [:head
           [:title "Mesaje"]
           [:meta {:charset "UTF-8"}]

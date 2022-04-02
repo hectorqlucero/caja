@@ -9,7 +9,8 @@
             [ring.middleware.reload :as reload]
             [ring.middleware.session :refer [wrap-session]]
             [ring.middleware.session.cookie :refer [cookie-store]]
-            [sk.models.crud :refer [KEY config]]
+            [sk.models.crud :refer [KEY]]
+            [sk.user :as user]
             [sk.proutes :refer [proutes]]
             [sk.routes :refer [open-routes]])
   (:gen-class))
@@ -30,7 +31,7 @@
 
 (defroutes app-routes
   (route/resources "/")
-  (route/files (:path config) {:root (:uploads config)})
+  (route/files (:path user/config) {:root (:uploads user/config)})
   open-routes
   (wrap-login proutes)
   (route/not-found "Not Found"))
@@ -48,4 +49,4 @@
                           (assoc-in [:session :store] (cookie-store {:key KEY}))
                           (assoc-in [:session :cookie-attrs] {:max-age 28800})
                           (assoc-in [:session :cookie-name] "LS"))))
-   {:port (:port config)}))
+   {:port (:port user/config)}))

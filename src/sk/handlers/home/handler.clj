@@ -7,7 +7,8 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [sk.handlers.home.view :refer [login-script login-view]]
             [sk.layout :refer [application error-404]]
-            [sk.models.crud :refer [Query config db]]
+            [sk.user :as user]
+            [sk.models.crud :refer [Query db]]
             [sk.models.util :refer [get-session-id]]))
 
 ;; Start Main
@@ -30,7 +31,7 @@
 (defn main
   [_]
   (try
-    (let [title (:site config)
+    (let [title (:site user/config)
           ok (get-session-id)
           content [:div [:span {:style "margin-left:20px;"} (get-main-title)]]]
       (application title ok nil content))

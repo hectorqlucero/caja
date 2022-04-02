@@ -5,7 +5,8 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [sk.handlers.registrar.view :refer [registrar-scripts registrar-view reset-jwt-scripts reset-jwt-view reset-password-scripts reset-password-view]]
             [sk.layout :refer [application error-404]]
-            [sk.models.crud :refer [Query Save Update build-postvars config db]]
+            [sk.user :as user]
+            [sk.models.crud :refer [Query Save Update build-postvars db]]
             [sk.models.email :refer [host send-email]]
             [sk.models.util :refer [check-token create-token get-reset-url get-session-id]]))
 
@@ -84,7 +85,7 @@
                             "Si usted no intento cambiar su contraseña o no desea cambiarla, simplemente ignore este mensage.</br></br></br>"
                             "Sinceramente,</br></br>"
                             "La Administración")
-          body         {:from    (:email-user config)
+          body         {:from    (:email-user user/config)
                         :to      email
                         :subject subject
                         :body    [{:type    "text/html;charset=utf-8"
