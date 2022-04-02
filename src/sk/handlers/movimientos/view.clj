@@ -50,7 +50,7 @@
         required:true,
         width:'100%'"})
    (build-radio-buttons
-    "tipo_movimiento"
+    "Tipo de movimiento:"
     (list
      {:id "tipo_movimiento_d"
       :name "tipo_movimiento"
