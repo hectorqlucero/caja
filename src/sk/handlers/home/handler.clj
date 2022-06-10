@@ -7,7 +7,7 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [sk.handlers.home.view :refer [login-script login-view]]
             [sk.layout :refer [application error-404]]
-            [sk.user :as user]
+            [sk.migrations :refer [config]]
             [sk.models.crud :refer [Query db]]
             [sk.models.util :refer [get-session-id]]))
 
@@ -31,8 +31,8 @@
 (defn main
   [_]
   (try
-    (let [title (:site user/config)
-          ok (get-session-id)
+    (let [title   (:site config)
+          ok      (get-session-id)
           content [:div [:span {:style "margin-left:20px;"} (get-main-title)]]]
       (application title ok nil content))
     (catch Exception e (.getMessage e))))

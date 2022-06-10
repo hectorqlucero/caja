@@ -1,4 +1,4 @@
-(ns sk.user
+(ns sk.migrations
   (:require [ragtime.jdbc :as jdbc]
             [ragtime.repl :as repl]
             [clojure.java.io :as io]))

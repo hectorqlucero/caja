@@ -10,7 +10,7 @@
             [ring.middleware.session :refer [wrap-session]]
             [ring.middleware.session.cookie :refer [cookie-store]]
             [sk.models.crud :refer [KEY]]
-            [sk.user :as user]
+            [sk.migrations :refer [config]]
             [sk.proutes :refer [proutes]]
             [sk.routes :refer [open-routes]])
   (:gen-class))
@@ -31,22 +31,22 @@
 
 (defroutes app-routes
   (route/resources "/")
-  (route/files (:path user/config) {:root (:uploads user/config)})
+  (route/files (:path config) {:root (:uploads config)})
   open-routes
   (wrap-login proutes)
   (route/not-found "Not Found"))
 
 (defn -main []
   (jetty/run-jetty
-   (-> (routes
-        (wrap-exception-handling app-routes))
-       (wrap-session)
-       (session/wrap-noir-session*)
-       (wrap-multipart-params)
-       (reload/wrap-reload)
-       (wrap-defaults (-> site-defaults
-                          (assoc-in [:security :anti-forgery] true)
-                          (assoc-in [:session :store] (cookie-store {:key KEY}))
-                          (assoc-in [:session :cookie-attrs] {:max-age 28800})
-                          (assoc-in [:session :cookie-name] "LS"))))
-   {:port (:port user/config)}))
+    (-> (routes
+          (wrap-exception-handling app-routes))
+        (wrap-session)
+        (session/wrap-noir-session*)
+        (wrap-multipart-params)
+        (reload/wrap-reload)
+        (wrap-defaults (-> site-defaults
+                           (assoc-in [:security :anti-forgery] true)
+                           (assoc-in [:session :store] (cookie-store {:key KEY}))
+                           (assoc-in [:session :cookie-attrs] {:max-age 28800})
+                           (assoc-in [:session :cookie-name] "LS"))))
+    {:port (:port config)}))

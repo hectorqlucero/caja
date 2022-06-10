@@ -5,7 +5,7 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [sk.handlers.registrar.view :refer [registrar-scripts registrar-view reset-jwt-scripts reset-jwt-view reset-password-scripts reset-password-view]]
             [sk.layout :refer [application error-404]]
-            [sk.user :as user]
+            [sk.migrations :refer [config]]
             [sk.models.crud :refer [Query Save Update build-postvars db]]
             [sk.models.email :refer [host send-email]]
             [sk.models.util :refer [check-token create-token get-reset-url get-session-id]]))
@@ -74,22 +74,22 @@
   "Create the email body"
   [row url]
   (try
-    (let [nombre       (str (:firstname row) " " (:lastname row))
-          email        (:email row)
-          subject      "Resetear su contraseña"
-          content      (str "<strong>Hola</strong> " nombre ",</br></br>"
-                            "Para resetear su contraseña <strong>" "<a href='" url "'>Clic Aqui</a>" "</strong>.</br></br>"
-                            "Como alternativa usted puede copiar y pegar el siguiente enlace en su navegador ex. Firefox, Chrome:</br></br>"
-                            url "</br></br>"
-                            "Este enlace es valido solo por 10 minutos.</br></br>"
-                            "Si usted no intento cambiar su contraseña o no desea cambiarla, simplemente ignore este mensage.</br></br></br>"
-                            "Sinceramente,</br></br>"
-                            "La Administración")
-          body         {:from    (:email-user user/config)
-                        :to      email
-                        :subject subject
-                        :body    [{:type    "text/html;charset=utf-8"
-                                   :content content}]}]
+    (let [nombre  (str (:firstname row) " " (:lastname row))
+          email   (:email row)
+          subject "Resetear su contraseña"
+          content (str "<strong>Hola</strong> " nombre ",</br></br>"
+                       "Para resetear su contraseña <strong>" "<a href='" url "'>Clic Aqui</a>" "</strong>.</br></br>"
+                       "Como alternativa usted puede copiar y pegar el siguiente enlace en su navegador ex. Firefox, Chrome:</br></br>"
+                       url "</br></br>"
+                       "Este enlace es valido solo por 10 minutos.</br></br>"
+                       "Si usted no intento cambiar su contraseña o no desea cambiarla, simplemente ignore este mensage.</br></br></br>"
+                       "Sinceramente,</br></br>"
+                       "La Administración")
+          body    {:from    (:email-user config)
+                   :to      email
+                   :subject subject
+                   :body    [{:type    "text/html;charset=utf-8"
+                              :content content}]}]
       body)
     (catch Exception e (.getMessage e))))
 
