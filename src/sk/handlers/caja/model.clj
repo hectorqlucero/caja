@@ -24,6 +24,7 @@
   "
   SELECT
   CONCAT(d.nombre,' ',d.paterno,' ',d.materno) as f_docentes,
+  m.cuenta_banco,
   DATE_FORMAT(m.fecha,'%Y %b %d') as fecha_formatted,
   FORMAT(m.cantidad,2) as cantidad,
   IF(m.tipo_movimiento='D',m.cantidad,0) as deposito,
@@ -34,17 +35,17 @@
   JOIN docentes d on d.id = m.f_docentes
   WHERE m.f_docentes = ?
   ORDER BY
-  m.fecha desc,d.nombre,d.paterno,d.materno
+  m.cuenta_banco,m.fecha,d.nombre,d.paterno,d.materno
   ")
 
 
 (defn get-balances [rows]
   (let [depositos (reduce + (map #(+ (:deposito %)) rows))
-        retiros (reduce + (map #(+ (:retiro %)) rows))
-        balance (- depositos retiros)]
+        retiros   (reduce + (map #(+ (:retiro %)) rows))
+        balance   (- depositos retiros)]
     {:depositos depositos
-     :retiros retiros
-     :balance balance}))
+     :retiros   retiros
+     :balance   balance}))
 
 (defn get-rows-consulta [docente-id]
   (Query db [get-rows-consulta-sql docente-id]))
