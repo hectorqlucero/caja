@@ -1,6 +1,7 @@
 (ns sk.handlers.caja.view
-  (:require [sk.handlers.caja.model
-             :refer [get-rows get-rows-consulta get-balances get-docente]]
+  (:require [hiccup.core :refer [html]]
+            [sk.handlers.caja.model
+             :refer [cuentas get-rows get-rows-consulta get-rows-cuenta-consulta get-balances get-docente]]
             [sk.handlers.movimientos.model :refer [money-format]]))
 
 (defn my-body [row]
@@ -58,64 +59,88 @@
    });
    "])
 
+(defn build-depositos [balances-row]
+  [:tr
+   [:td {:style "text-align:right;"} [:strong (:cuenta_banco balances-row)]]
+   [:td (money-format (:depositos balances-row))]
+   [:td (money-format (:retiros balances-row))]
+   [:td (money-format (:balance balances-row))]])
+
+(defn process-depositos [docente-id]
+  (let [rows (get-rows-consulta docente-id)
+        balances-row (get-balances rows)
+        cuentas (vec (cuentas docente-id))
+        cnt (count cuentas)]
+    (if (> cnt 1)
+      (do
+        (list
+         (map (fn [cuenta]
+                (build-depositos (get-balances (get-rows-cuenta-consulta docente-id cuenta)))) cuentas)))
+      (build-depositos balances-row))))
+
+(process-depositos 1)
+
 (defn consulta-view [title docente-id]
-  (let [rows         (get-rows-consulta docente-id)
+  (let [cuentas      (vec (cuentas docente-id))
+        cnt          (count cuentas)
+        rows         (get-rows-consulta docente-id)
         docente      (:nombre (get-docente docente-id))
         balances-row (get-balances rows)]
     (list
-      [:div.col-12.text-center
-       [:h3 {:style "color:#158CBA;text-transform:uppercase;font-weight:bold;"} title]
-       [:hr]
-       [:div.col-12.text-center {:style "margin-bottom:10px;"}
-        [:input.easyui-combobox {:name         "docentes"
-                                 :id           "docentes_id"
-                                 :data-options "method:'GET',url:'/table_ref/get_docentes',limitToList:true"}]
-        [:button.btn.btn-primary {:id    "procesar"
-                                  :type  "button"
-                                  :style "margin-left:10px;"} "Procesar"]]
-       [:div.container
-        [:div.row
-         [:div.col
-          [:div.card {:style "width: 25rem;"}
-           [:div.card-body
-            [:h5.card-title.text-success "Balance de caja para: " [:strong.text-primary docente]]
-            [:p.card-text
-             [:table.table
-              [:thead
-               [:tr
-                [:th "DEPOSITOS"]
-                [:th "RETIROS"]
-                [:th "BALANCE"]]]
-              [:tbody
-               [:tr
-                [:td (money-format (:depositos balances-row))]
-                [:td (money-format (:retiros balances-row))]
-                [:td (money-format (:balance balances-row))]]]]]]]]
-         [:div.col
-          [:div.card {:style "width: 35rem;"}
-           [:div.card-body
-            [:h5.card-title.text-success "Balance desglosado para: " [:strong.text-primary docente]]
-            [:p.card-text
-             [:table.table
-              [:thead
-               [:tr
-                [:th "CUENTA"]
-                [:th "FECHA"]
-                [:th {:style "text-align:right;"} "DEPOSITO"]
-                [:th {:style "text-align:right;"} "RETIRO"]]]
-              [:tbody
-               (map (fn [row]
-                      (list
-                        [:tr
-                         [:td {:style "text-align:right;"} (:cuenta_banco row)]
-                         [:td {:style "text-align:right;"} (:fecha_formatted row)]
-                         [:td {:style "text-align:right;"} (money-format (:deposito row))]
-                         [:td {:style "text-align:right;"} (money-format (:retiro row))]])) rows)
-               [:tr
-                [:td [:span {:style "font-weight:bold;"} "Total:"]]
-                [:td [:span " "]]
-                [:td {:style "text-align:right;"} (money-format (:depositos balances-row))]
-                [:td {:style "text-align:right;"} (money-format (:retiros balances-row))]]]]]]]]]]])))
+     [:div.col-12.text-center
+      [:h3 {:style "color:#158CBA;text-transform:uppercase;font-weight:bold;"} title]
+      [:hr]
+      [:div.col-12.text-center {:style "margin-bottom:10px;"}
+       [:input.easyui-combobox {:name         "docentes"
+                                :id           "docentes_id"
+                                :data-options "method:'GET',url:'/table_ref/get_docentes',limitToList:true"}]
+       [:button.btn.btn-primary {:id    "procesar"
+                                 :type  "button"
+                                 :style "margin-left:10px;"} "Procesar"]]
+      [:div.container
+       [:div.row
+        [:div.col
+         [:div.card {:style "width: 27rem;"}
+          [:div.card-body
+           [:h5.card-title.text-success "Balance de caja para: " [:strong.text-primary docente]]
+           [:p.card-text
+            [:table.table
+             [:thead
+              [:tr
+               [:th "CUENTA"]
+               [:th "DEPOSITOS"]
+               [:th "RETIROS"]
+               [:th "BALANCE"]]]
+             [:tbody
+              (process-depositos docente-id)
+              (if (> cnt 1)
+                (build-depositos (assoc balances-row :cuenta_banco "Total:")))]]]]]]
+
+        [:div.col
+         [:div.card {:style "width: 35rem;"}
+          [:div.card-body
+           [:h5.card-title.text-success "Balance desglosado para: " [:strong.text-primary docente]]
+           [:p.card-text
+            [:table.table
+             [:thead
+              [:tr
+               [:th "CUENTA"]
+               [:th "FECHA"]
+               [:th {:style "text-align:right;"} "DEPOSITO"]
+               [:th {:style "text-align:right;"} "RETIRO"]]]
+             [:tbody
+              (map (fn [row]
+                     (list
+                      [:tr
+                       [:td {:style "text-align:right;font-weight:bold;"} (:cuenta_banco row)]
+                       [:td {:style "text-align:right;"} (:fecha_formatted row)]
+                       [:td {:style "text-align:right;"} (money-format (:deposito row))]
+                       [:td {:style "text-align:right;"} (money-format (:retiro row))]])) rows)
+              [:tr
+               [:td {:style "text-align:right;"} [:span {:style "font-weight:bold;"} "Total:"]]
+               [:td [:span " "]]
+               [:td {:style "text-align:right;"} (money-format (:depositos balances-row))]
+               [:td {:style "text-align:right;"} (money-format (:retiros balances-row))]]]]]]]]]]])))
 
 (defn consulta-scripts []
   [:script
@@ -131,4 +156,5 @@
 
 (comment
   (money-format 200)
+  (get-rows-consulta 1)
   (consulta-view "Consultas" 1))
