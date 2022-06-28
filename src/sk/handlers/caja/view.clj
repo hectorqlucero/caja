@@ -78,8 +78,6 @@
                 (build-depositos (get-balances (get-rows-cuenta-consulta docente-id cuenta)))) cuentas)))
       (build-depositos balances-row))))
 
-(process-depositos 1)
-
 (defn consulta-view [title docente-id]
   (let [cuentas      (vec (cuentas docente-id))
         cnt          (count cuentas)
