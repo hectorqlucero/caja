@@ -66,17 +66,13 @@
    [:td (money-format (:retiros balances-row))]
    [:td (money-format (:balance balances-row))]])
 
-(defn process-depositos [docente-id]
-  (let [rows (get-rows-consulta docente-id)
-        balances-row (get-balances rows)
-        cuentas (vec (cuentas docente-id))
-        cnt (count cuentas)]
-    (if (> cnt 1)
-      (do
-        (list
-         (map (fn [cuenta]
-                (build-depositos (get-balances (get-rows-cuenta-consulta docente-id cuenta)))) cuentas)))
-      (build-depositos balances-row))))
+(defn process-depositos [docente-id balances-row cuentas cnt]
+  (if (> cnt 1)
+    (do
+      (list
+       (map (fn [cuenta]
+              (build-depositos (get-balances (get-rows-cuenta-consulta docente-id cuenta)))) cuentas)))
+    (build-depositos balances-row)))
 
 (defn consulta-view [title docente-id]
   (let [cuentas      (vec (cuentas docente-id))
@@ -110,7 +106,7 @@
                [:th "RETIROS"]
                [:th "BALANCE"]]]
              [:tbody
-              (process-depositos docente-id)
+              (process-depositos docente-id balances-row cuentas cnt)
               (if (> cnt 1)
                 (build-depositos (assoc balances-row :cuenta_banco "Total:")))]]]]]]
 
