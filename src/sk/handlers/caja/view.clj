@@ -1,6 +1,5 @@
 (ns sk.handlers.caja.view
-  (:require [hiccup.core :refer [html]]
-            [sk.handlers.caja.model
+  (:require [sk.handlers.caja.model
              :refer [cuentas get-rows get-rows-consulta get-rows-cuenta-consulta get-balances get-docente]]
             [sk.handlers.movimientos.model :refer [money-format]]))
 
