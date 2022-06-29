@@ -27,12 +27,12 @@
 (defn caja-scripts []
   [:script
    "
-     var dg = $('.dg');
-     $(document).ready(function() {
-      dg.datagrid();
-      dg.datagrid('enableFilter');
-     });
-     "])
+   var dg = $('.dg');
+   $(document).ready(function() {
+   dg.datagrid();
+   dg.datagrid('enableFilter');
+   });
+   "])
 
 (defn consulta-index-view [title]
   (list
@@ -51,11 +51,11 @@
   [:script
    "
    $(document).ready(function() {
-    $('#procesar').click(function() {
-      var docentes_id = $('#docentes_id').combobox('getValue');
-      var url = '/consultas/' + docentes_id;
-      window.location.replace(url);
-    });
+   $('#procesar').click(function() {
+   var docentes_id = $('#docentes_id').combobox('getValue');
+   var url = '/consultas/' + docentes_id;
+   window.location.replace(url);
+   });
    });
    "])
 
@@ -140,11 +140,11 @@
   [:script
    "
    $(document).ready(function() {
-    $('#procesar').click(function() {
-      var docentes_id = $('#docentes_id').combobox('getValue');
-      var url = '/consultas/' + docentes_id;
-      window.location.replace(url);
-    });
+   $('#procesar').click(function() {
+   var docentes_id = $('#docentes_id').combobox('getValue');
+   var url = '/consultas/' + docentes_id;
+   window.location.replace(url);
+   });
    });
    "])
 
