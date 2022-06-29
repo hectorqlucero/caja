@@ -123,12 +123,11 @@
                [:th {:style "text-align:right;"} "RETIRO"]]]
              [:tbody
               (map (fn [row]
-                     (list
-                      [:tr
-                       [:td {:style "text-align:right;font-weight:bold;"} (:cuenta_banco row)]
-                       [:td {:style "text-align:right;"} (:fecha_formatted row)]
-                       [:td {:style "text-align:right;"} (money-format (:deposito row))]
-                       [:td {:style "text-align:right;"} (money-format (:retiro row))]])) rows)
+                     [:tr
+                      [:td {:style "text-align:right;font-weight:bold;"} (:cuenta_banco row)]
+                      [:td {:style "text-align:right;"} (:fecha_formatted row)]
+                      [:td {:style "text-align:right;"} (money-format (:deposito row))]
+                      [:td {:style "text-align:right;"} (money-format (:retiro row))]]) rows)
               [:tr
                [:td {:style "text-align:right;"} [:span {:style "font-weight:bold;"} "Total:"]]
                [:td [:span " "]]
