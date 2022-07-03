@@ -73,9 +73,16 @@
               (build-depositos (get-balances (get-rows-cuenta-consulta docente-id cuenta)))) cuentas)))
     (build-depositos balances-row)))
 
+(defn get-balance [row bal]
+  (let [debit (or (:deposito row) 0)
+        credit (or (:retiro row) 0)
+        total (- debit credit)]
+    (+ bal total)))
+
 (defn consulta-view [title docente-id]
   (let [cuentas      (vec (cuentas docente-id))
         cnt          (count cuentas)
+        balance      (atom 0)
         rows         (get-rows-consulta docente-id)
         docente      (:nombre (get-docente docente-id))
         balances-row (get-balances rows)]
@@ -120,14 +127,16 @@
                [:th "CUENTA"]
                [:th "FECHA"]
                [:th {:style "text-align:right;"} "DEPOSITO"]
-               [:th {:style "text-align:right;"} "RETIRO"]]]
+               [:th {:style "text-align:right;"} "RETIRO"]
+               [:th {:style "text-align:right;"} "BALANCE"]]]
              [:tbody
               (map (fn [row]
                      [:tr
                       [:td {:style "text-align:right;font-weight:bold;"} (:cuenta_banco row)]
                       [:td {:style "text-align:right;"} (:fecha_formatted row)]
                       [:td {:style "text-align:right;"} (money-format (:deposito row))]
-                      [:td {:style "text-align:right;"} (money-format (:retiro row))]]) rows)
+                      [:td {:style "text-align:right;"} (money-format (:retiro row))]
+                      [:td {:style "text-align:right;"} (money-format (reset! balance (get-balance row @balance)))]]) rows)
               [:tr
                [:td {:style "text-align:right;"} [:span {:style "font-weight:bold;"} "Total:"]]
                [:td [:span " "]]
